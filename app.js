@@ -10,6 +10,9 @@ let rightImageElement = document.getElementById('rightImage');
 let userAttemptCounter = 0;
 let maxAttempt = 25;
 let ImagesShown = [];
+let busImgName=[];
+let imgVotes=[];
+let firstSetArry=[];
 //idefntify the function that will have the images attr.
 
 function BusMall(name, source) {
@@ -18,6 +21,7 @@ function BusMall(name, source) {
     this.votes = 0;
     this.show = 0;
     BusMall.allImages.push(this);
+    busImgName.push(name);
 }
 BusMall.allImages = [];
 
@@ -54,14 +58,26 @@ console.log(Math.floor(Math.random() * BusMall.allImages.length));
 // creat the rendered images 
 function renderThreeImages() {
     middleImageIndex = generateRandomImages();
-
+    rightImageIndex = generateRandomImages();
+    leftImageIndex = generateRandomImages();
+    
+    firstSetArry.push(leftImageIndex);
+   firstSetArry.push(middleImageIndex);
+   firstSetArry.push(rightImageIndex);
+   //console.log(firstSetArry);
     do {
+        middleImageIndex = generateRandomImages();
         rightImageIndex = generateRandomImages();
         leftImageIndex = generateRandomImages();
-    } while (leftImageIndex === rightImageElement || leftImageIndex === middleImageIndex || rightImageIndex === middleImageIndex)
-
+    } while (leftImageIndex === rightImageIndex || leftImageIndex === middleImageIndex || rightImageIndex === middleImageIndex || firstSetArry.includes(leftImageIndex) || firstSetArry.includes(middleImageIndex) || firstSetArry.includes(rightImageIndex))
+//|| firstSetArry.includes(leftImageIndex|| firstSetArry.includes(middleImageIndex)|| firstSetArry.includes(rightImageIndex))
+    firstSetArry =[];
+    firstSetArry.push(leftImageIndex);
+    firstSetArry.push(middleImageIndex);
+    firstSetArry.push(rightImageIndex);
+    console.log(firstSetArry);
+    
     BusMall.allImages;
-
     leftImageElement.src = BusMall.allImages[leftImageIndex].source;
     BusMall.allImages[leftImageIndex].show++;
     middleImageElement.src = BusMall.allImages[middleImageIndex].source;
@@ -72,6 +88,7 @@ function renderThreeImages() {
 }
 //rightImageElement.src=BusMall.allImages[0].source;
 console.log(rightImageElement);
+
 renderThreeImages();
 
 
@@ -97,9 +114,10 @@ function handleUserClicks(event) {
     else {
         for (let i = 0; i < BusMall.allImages.length; i++) {
             ImagesShown.push(BusMall.allImages[i].show);
+            imgVotes.push(BusMall.allImages[i].votes);
 
         }
-
+        viewCharts();
         /*let list = document.getElementById('resultList');
         let userResult;
         for (let i = 0; i < BusMall.allImages.length; i++) {
@@ -125,4 +143,34 @@ function renderUl() {
         userResult.textContent = BusMall.allImages[i].name + 'has Earned :    ' + BusMall.allImages[i].votes + '       votes' + 'and has been disblayed   '+ BusMall.allImages[i].show;
         console.log(list);
     }
+}
+
+
+
+function viewCharts(){
+var ctx = document.getElementById('myChart').getContext('2d');
+var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'bar',
+
+    // The data for our dataset
+    data: {
+        labels: busImgName,
+        datasets: [{
+            label: 'ImgesVote',
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: imgVotes,
+        },
+        {
+            label: 'Imge shown',
+            backgroundColor: 'dark blue',
+            borderColor: 'red',
+            data: ImagesShown
+          },]
+    },
+
+    // Configuration options go here
+    options: {}
+});
 }
