@@ -122,7 +122,7 @@ function renderUl() {
     for (let i = 0; i < BusMall.allImages.length; i++) {
         userResult = document.createElement('li');
         list.appendChild(userResult);
-        userResult.textContent = BusMall.allImages[i].name + 'has Earned :    ' + BusMall.allImages[i].votes + '       votes' + BusMall.allImages[i].show;
+        userResult.textContent = BusMall.allImages[i].name + 'has Earned :    ' + BusMall.allImages[i].votes + '       votes' + 'and has been disblayed   '+ BusMall.allImages[i].show;
         console.log(list);
     }
 }
