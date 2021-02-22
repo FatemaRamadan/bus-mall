@@ -9,6 +9,7 @@ let middleImageElement = document.getElementById('middleImage');
 let rightImageElement = document.getElementById('rightImage');
 let userAttemptCounter = 0;
 let maxAttempt = 25;
+let ImagesShown = [];
 //idefntify the function that will have the images attr.
 
 function BusMall(name, source) {
@@ -62,8 +63,11 @@ function renderThreeImages() {
     BusMall.allImages;
 
     leftImageElement.src = BusMall.allImages[leftImageIndex].source;
+    BusMall.allImages[leftImageIndex].show++;
     middleImageElement.src = BusMall.allImages[middleImageIndex].source;
+    BusMall.allImages[leftImageIndex].show++;
     rightImageElement.src = BusMall.allImages[rightImageIndex].source;
+    BusMall.allImages[leftImageIndex].show++;
 
 }
 //rightImageElement.src=BusMall.allImages[0].source;
@@ -91,17 +95,34 @@ function handleUserClicks(event) {
         }
     }
     else {
-        let list = document.getElementById('resultList');
+        for (let i = 0; i < BusMall.allImages.length; i++) {
+            ImagesShown.push(BusMall.allImages[i].show);
+
+        }
+
+        /*let list = document.getElementById('resultList');
         let userResult;
         for (let i = 0; i < BusMall.allImages.length; i++) {
             userResult = document.createElement('li');
             list.appendChild(userResult);
             userResult.textContent = BusMall.allImages[i].name + 'has Earned :    ' + BusMall.allImages[i].votes + '       votes';
             console.log(list);
-        }
-    images.removeEventListener('click',handleUserClicks);
-   // middleImageIndex.removeEventListner('click', handleUserClicks);
-   // leftImageIndex.removeEventListner('click', handleUserClicks);
+        }*/
+        images.removeEventListener('click', handleUserClicks);
+        // middleImageIndex.removeEventListner('click', handleUserClicks);
+        // leftImageIndex.removeEventListner('click', handleUserClicks);
+    }
+
+} let resultBtn = document.getElementById('resultsButton');
+resultBtn.addEventListener('click', renderUl);
+
+function renderUl() {
+    let list = document.getElementById('resultList');
+    let userResult;
+    for (let i = 0; i < BusMall.allImages.length; i++) {
+        userResult = document.createElement('li');
+        list.appendChild(userResult);
+        userResult.textContent = BusMall.allImages[i].name + 'has Earned :    ' + BusMall.allImages[i].votes + '       votes' + BusMall.allImages[i].show;
+        console.log(list);
     }
 }
-
