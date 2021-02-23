@@ -10,9 +10,9 @@ let rightImageElement = document.getElementById('rightImage');
 let userAttemptCounter = 0;
 let maxAttempt = 25;
 let ImagesShown = [];
-let busImgName=[];
-let imgVotes=[];
-let firstSetArry=[];
+let busImgName = [];
+let imgVotes = [];
+let firstSetArry = [];
 //idefntify the function that will have the images attr.
 
 function BusMall(name, source) {
@@ -22,8 +22,35 @@ function BusMall(name, source) {
     this.show = 0;
     BusMall.allImages.push(this);
     busImgName.push(name);
+
 }
+// creating the array of imges
 BusMall.allImages = [];
+
+//creating function to transfer data into string
+function setItem() {
+    let data = JSON.stringify(BusMall.allImages);
+    console.log(data);
+    localStorage.setItem('busMall', data);
+}
+
+//now getting items from local storge
+function getItems() {
+    let backToString = localStorage.getItem('busMall');
+    let normalObj = JSON.parse(backToString);
+    console.log(normalObj);
+    if (normalObj !== null) {
+        BusMall.allImages = normalObj;
+        for (let i = 0; i < BusMall.allImages.length; i++) {
+            ImagesShown.push(BusMall.allImages[i].show);
+            imgVotes.push(BusMall.allImages[i].votes);
+        }
+        viewCharts();
+    }
+
+    renderThreeImages();
+}
+
 
 //adding new instances
 new BusMall('bag', 'img/assets/bag.jpg');
@@ -55,28 +82,28 @@ function generateRandomImages() {
 }
 console.log(Math.floor(Math.random() * BusMall.allImages.length));
 
-// creat the rendered images 
+// creat the rendered images
 function renderThreeImages() {
     middleImageIndex = generateRandomImages();
     rightImageIndex = generateRandomImages();
     leftImageIndex = generateRandomImages();
-    
+
     firstSetArry.push(leftImageIndex);
-   firstSetArry.push(middleImageIndex);
-   firstSetArry.push(rightImageIndex);
-   //console.log(firstSetArry);
+    firstSetArry.push(middleImageIndex);
+    firstSetArry.push(rightImageIndex);
+    //console.log(firstSetArry);
     do {
         middleImageIndex = generateRandomImages();
         rightImageIndex = generateRandomImages();
         leftImageIndex = generateRandomImages();
     } while (leftImageIndex === rightImageIndex || leftImageIndex === middleImageIndex || rightImageIndex === middleImageIndex || firstSetArry.includes(leftImageIndex) || firstSetArry.includes(middleImageIndex) || firstSetArry.includes(rightImageIndex))
-//|| firstSetArry.includes(leftImageIndex|| firstSetArry.includes(middleImageIndex)|| firstSetArry.includes(rightImageIndex))
-    firstSetArry =[];
+
+    firstSetArry = [];
     firstSetArry.push(leftImageIndex);
     firstSetArry.push(middleImageIndex);
     firstSetArry.push(rightImageIndex);
     console.log(firstSetArry);
-    
+
     BusMall.allImages;
     leftImageElement.src = BusMall.allImages[leftImageIndex].source;
     BusMall.allImages[leftImageIndex].show++;
@@ -115,24 +142,17 @@ function handleUserClicks(event) {
         for (let i = 0; i < BusMall.allImages.length; i++) {
             ImagesShown.push(BusMall.allImages[i].show);
             imgVotes.push(BusMall.allImages[i].votes);
-
         }
         viewCharts();
-        /*let list = document.getElementById('resultList');
-        let userResult;
-        for (let i = 0; i < BusMall.allImages.length; i++) {
-            userResult = document.createElement('li');
-            list.appendChild(userResult);
-            userResult.textContent = BusMall.allImages[i].name + 'has Earned :    ' + BusMall.allImages[i].votes + '       votes';
-            console.log(list);
-        }*/
-        images.removeEventListener('click', handleUserClicks);
-        // middleImageIndex.removeEventListner('click', handleUserClicks);
-        // leftImageIndex.removeEventListner('click', handleUserClicks);
-    }
+        setItem();
 
-} let resultBtn = document.getElementById('resultsButton');
+        images.removeEventListener('click', handleUserClicks);
+    }
+}
+
+let resultBtn = document.getElementById('resultsButton');
 resultBtn.addEventListener('click', renderUl);
+
 
 function renderUl() {
     let list = document.getElementById('resultList');
@@ -140,37 +160,37 @@ function renderUl() {
     for (let i = 0; i < BusMall.allImages.length; i++) {
         userResult = document.createElement('li');
         list.appendChild(userResult);
-        userResult.textContent = BusMall.allImages[i].name + 'has Earned :    ' + BusMall.allImages[i].votes + '       votes' + 'and has been disblayed   '+ BusMall.allImages[i].show;
+        userResult.textContent = BusMall.allImages[i].name + 'has Earned :    ' + BusMall.allImages[i].votes + '       votes' + 'and has been disblayed   ' + BusMall.allImages[i].show;
         console.log(list);
     }
 }
 
 
 
-function viewCharts(){
-var ctx = document.getElementById('myChart').getContext('2d');
-var chart = new Chart(ctx, {
-    // The type of chart we want to create
-    type: 'bar',
+function viewCharts() {
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'bar',
 
-    // The data for our dataset
-    data: {
-        labels: busImgName,
-        datasets: [{
-            label: 'ImgesVote',
-            backgroundColor: 'rgb(255, 99, 132)',
-            borderColor: 'rgb(255, 99, 132)',
-            data: imgVotes,
+        // The data for our dataset
+        data: {
+            labels: busImgName,
+            datasets: [{
+                label: 'ImgesVote',
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: imgVotes,
+            },
+            {
+                label: 'Imge shown',
+                backgroundColor: 'dark blue',
+                borderColor: 'red',
+                data: ImagesShown
+            },]
         },
-        {
-            label: 'Imge shown',
-            backgroundColor: 'dark blue',
-            borderColor: 'red',
-            data: ImagesShown
-          },]
-    },
-
-    // Configuration options go here
-    options: {}
-});
+        // Configuration options go here
+        options: {}
+    });
 }
+getItems();
